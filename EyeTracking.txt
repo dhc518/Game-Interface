@@ -1,0 +1,7 @@
+HCI
+	Game Interface Design
+		UI/UX(UserExperience)
+			N/N group
+
+Apple User Guidelines를 기준으로 개발 하는 것이 좋고,
+시스템이 업데이트 될 때마다 가이드 라인도 업데이트 되니 수시로 확인할 것.
