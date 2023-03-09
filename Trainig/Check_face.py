@@ -4,7 +4,7 @@ import mediapipe as mp
 
 mp_face_mesh = mp.solutions.face_mesh
 
-LEFT_EYE = []
+LEFT_EYE = [362,382,381,]
 RIGHT_EYE = []
 
 with mp_face_mesh.FaceMesh(max_num_faces =1,
