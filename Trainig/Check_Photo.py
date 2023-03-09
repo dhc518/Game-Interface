@@ -4,8 +4,8 @@ import mediapipe as mp
 
 mp_face_mesh = mp.solutions.face_mesh
 
-LEFT_EYE = [362,382,381,]
-RIGHT_EYE = []
+LEFT_EYE = [362,382,381,380,374,373,398,249,263,466,388,387,386,385,384,398]
+RIGHT_EYE = [ 33,7,163,144,145,153,154,155,133,173,157,158,159,160,161,246 ]
 
 with mp_face_mesh.FaceMesh(max_num_faces =1,
                            refine_landmarks =True,
@@ -20,6 +20,8 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
             mesh_points = np.array([np.multiply([p.x, p.y], [img_w, img_h]).astype(int)
                                     for p in results.multi_face_landmarks[0].landmark])
             print(mesh_points)
+            cv.polylines(frame, [mesh_points[LEFT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
+            cv.polylines(frame, [mesh_points[RIGHT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
 
         cv.imshow('Main', frame)
 
