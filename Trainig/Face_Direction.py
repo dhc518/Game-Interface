@@ -81,10 +81,16 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
                 cv.circle(frame, pt, 1, (255,255,255), -1, cv.LINE_AA)
 
             print(mesh_points)
+
+            #아이라인
             cv.polylines(frame, [mesh_points[LEFT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
             cv.polylines(frame, [mesh_points[RIGHT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
-            #cv.polylines(frame, [mesh_points[LEFT_IRIS]], True, (0, 0, 255), 2, cv.LINE_AA)
-            #cv.polylines(frame, [mesh_points[RIGHT_IRIS]], True, (0, 0, 255), 2, cv.LINE_AA)
+
+            #눈동자 마름모
+            # cv.polylines(frame, [mesh_points[LEFT_IRIS]], True, (0, 0, 255), 2, cv.LINE_AA)
+            # cv.polylines(frame, [mesh_points[RIGHT_IRIS]], True, (0, 0, 255), 2, cv.LINE_AA)
+
+            #눈동자 원형
             (l_cx, l_cy), l_radius = cv.minEnclosingCircle(mesh_points[LEFT_IRIS])
             (r_cx, r_cy), r_radius = cv.minEnclosingCircle(mesh_points[RIGHT_IRIS])
             center_left = np.array([l_cx, l_cy], dtype=np.int32)
@@ -148,11 +154,11 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
         #cv.imshow('CAM_RotateWindow', img)
 
         #반전된 이미지 표시
-        cv.imshow('CAM_FlipWindow', img2)
+        #cv.imshow('CAM_FlipWindow', img2)
 
-        #윈도우 크기 늘리기
-        dst2 = cv.resize(img2, dsize=(1440, 1080), interpolation=cv.INTER_AREA)
-        cv.imshow('CAM_FlipWindow2', dst2)
+        #윈도우 크기 늘리기/줄이기
+        dst2 = cv.resize(frame, dsize=(720, 480), interpolation=cv.INTER_AREA)
+        cv.imshow('CAM_Window2', dst2)
 
         key = cv.waitKey(1)
         if key == ord('q'):
