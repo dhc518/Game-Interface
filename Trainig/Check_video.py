@@ -77,8 +77,8 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
             rot_mat, jac = cv.Rodrigues(rot_vec)
             angles, mtxR, mtxQ, Qx, Qy, Qz = cv.RQDecomp3x3(rot_mat)
             x = angles[0] * 360
-            y = angles[0] * 360
-            z = angles[0] * 360
+            y = angles[1] * 360
+            z = angles[2] * 360
 
             # nose+3d_projection, jacobian = cv.projectionPoints(nose_3d, rot_vec, trans_vec, camera_mat, dist_mat)
 

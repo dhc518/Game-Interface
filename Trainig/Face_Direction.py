@@ -74,6 +74,12 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
         if results.multi_face_landmarks:
             mesh_points = np.array([np.multiply([p.x, p.y], [img_w, img_h]).astype(int)
                                  for p in results.multi_face_landmarks[0].landmark])
+
+            #face_mesh 전부 표시하기 색(B,G,R)
+            for pt in mesh_points:
+                #cv.circle(img, center,radius,color,thicknex,lineType)
+                cv.circle(frame, pt, 1, (255,255,255), -1, cv.LINE_AA)
+
             print(mesh_points)
             cv.polylines(frame, [mesh_points[LEFT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
             cv.polylines(frame, [mesh_points[RIGHT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
@@ -95,6 +101,7 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
                     if idx == 1:
                         nose_2d = (lm.x*img_w,lm.y*img_h)
                         nose_3d = (lm.x*img_w,lm.y*img_h, lm.z*3000)
+
                     x,y = int(lm.x * img_w), int(lm.y * img_h)
 
                     face_2d.append([x,y])
@@ -116,8 +123,8 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
             rot_mat, jac = cv.Rodrigues(rot_vec)
             angles, mtxR, mtxQ, Qx, Qy, Qz = cv.RQDecomp3x3(rot_mat)
             x = angles[0] * 360
-            y = angles[0] * 360
-            z = angles[0] * 360
+            y = angles[1] * 360
+            z = angles[2] * 360
 
             #nose+3d_projection, jacobian = cv.projectionPoints(nose_3d, rot_vec, trans_vec, camera_mat, dist_mat)
 
