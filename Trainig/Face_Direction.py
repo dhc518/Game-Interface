@@ -145,14 +145,14 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
         cv.imshow('Main', frame)
 
         # 회전된 이미지 표시
-        cv.imshow('CAM_RotateWindow', img)
+        #cv.imshow('CAM_RotateWindow', img)
 
         #반전된 이미지 표시
         cv.imshow('CAM_FlipWindow', img2)
 
         #윈도우 크기 늘리기
-        #dst2 = cv.resize(img, dsize=(720, 960), interpolation=cv.INTER_AREA)
-        #cv.imshow('CAM_RotateWindow2', dst2)
+        dst2 = cv.resize(img2, dsize=(1440, 1080), interpolation=cv.INTER_AREA)
+        cv.imshow('CAM_FlipWindow2', dst2)
 
         key = cv.waitKey(1)
         if key == ord('q'):
