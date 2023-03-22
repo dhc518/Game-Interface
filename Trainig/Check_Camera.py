@@ -97,7 +97,8 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
         cv.imshow('CAM_FlipWindow', img2)
 
         #윈도우 크기 늘리기
-        #dst2 = cv.resize(img, dsize=(720, 960), interpolation=cv.INTER_AREA)
+        resolutuon = 1080
+        #dst2 = cv.resize(img, dsize=(resolution/9*16, resolution), interpolation=cv.INTER_AREA)
         #cv.imshow('CAM_RotateWindow2', dst2)
 
         key = cv.waitKey(1)
