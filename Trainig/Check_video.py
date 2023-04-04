@@ -2,6 +2,8 @@ import cv2 as cv
 import numpy as np
 import mediapipe as mp
 
+#cal_coor = [(0,0),(0,0),(0,0),(0,0),(0,0),(0,0),(0,0),(0,0),(0,0)]
+
 mp_face_mesh = mp.solutions.face_mesh
 
 LEFT_EYE = [362,382,381,380,374,373,390,249,263,466,388,387,386,385,384,398]
@@ -35,7 +37,7 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
 
 
 
-            print(mesh_points)
+            #print(mesh_points)
             cv.polylines(frame, [mesh_points[LEFT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
             cv.polylines(frame, [mesh_points[RIGHT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
             #cv.polylines(frame, [mesh_points[LEFT_IRIS]], True, (0, 0, 255), 2, cv.LINE_AA)
@@ -46,6 +48,7 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
             center_right = np.array([r_cx, r_cy], dtype=np.int32)
             cv.circle(frame, center_left, int(l_radius), (0, 0, 255), 2, cv.LINE_AA)
             cv.circle(frame, center_right, int(r_radius), (0, 0, 255), 2, cv.LINE_AA)
+            print(center_left,center_right)
 
             # face_direction
             face_2d = []

@@ -46,6 +46,29 @@ LEFT_EYE = [362,382,381,380,374,373,390,249,263,466,388,387,386,385,384,398]
 RIGHT_EYE = [ 33,7,163,144,145,153,154,155,133,173,157,158,159,160,161,246 ]
 LEFT_IRIS = [474,475,476,477 ]
 RIGHT_IRIS = [469,470,471,472 ]
+FACE_HEAD_POSE_LACNMARKS = [1, 33, 61, 199, 291, 263]
+
+'''
+화면 비율 = 16 : 9 = 1920 : 1080
+
+A = 1920 / 2 = 960
+B = 1080 / 2 = 540
+
+I = 9개의 점에 대한 눈동자의 좌표
+
+a = ( I3(x)-I1(x)+I6(x)-I4(x)+I9(x)-I7(x) ) / 6 
+b = ( I7(y)-I1(y)+I8(y)-I2(y)+I9(y)-I3(y) ) / 6
+
+현재 눈동자 좌표 = Now_I
+눈동자 좌표 
+(Now_I(x) - I5) * A/a
+(Now_I(y) - I5) * B/b
+'''
+Ix = []
+Iy = []
+IRx = []
+IRy = []
+
 
 
 
@@ -80,6 +103,57 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
             cv.circle(frame, center_left, int(l_radius), (0, 0, 255), 2, cv.LINE_AA)
             cv.circle(frame, center_right, int(r_radius), (0, 0, 255), 2, cv.LINE_AA)
 
+            # face_direction
+            face_2d = []
+            face_3d = []
+
+            for idx, lm in enumerate(results.multi_face_landmarks[0].landmark):
+                if idx in FACE_HEAD_POSE_LACNMARKS:
+                    if idx == 1:
+                        nose_2d = (lm.x * img_w, lm.y * img_h)
+                        nose_3d = (lm.x * img_w, lm.y * img_h, lm.z * 3000)
+                    x, y = int(lm.x * img_w), int(lm.y * img_h)
+
+                    face_2d.append([x, y])
+                    face_3d.append([x, y, lm.z])
+
+            face_2d = np.array(face_2d, dtype=np.float64)
+            face_3d = np.array(face_3d, dtype=np.float64)
+
+            focal_len = 1 * img_w
+
+            camera_mat = np.array([[focal_len, 0, img_h / 2],
+                                   [0, focal_len, img_w / 2],
+                                   [0, 0, 1]])
+
+            dist_mat = np.zeros((4, 1), dtype=np.float64)
+
+            success, rot_vec, trans_vec = cv.solvePnP(face_3d, face_2d, camera_mat, dist_mat)
+
+            rot_mat, jac = cv.Rodrigues(rot_vec)
+            angles, mtxR, mtxQ, Qx, Qy, Qz = cv.RQDecomp3x3(rot_mat)
+            x = angles[0] * 360
+            y = angles[1] * 360
+            z = angles[2] * 360
+
+            # nose+3d_projection, jacobian = cv.projectionPoints(nose_3d, rot_vec, trans_vec, camera_mat, dist_mat)
+
+            p1 = (int(nose_2d[0]), int(nose_2d[1]))
+            if Iy[8]:
+                X = (Ix[2] - Ix[0] + Ix[5] - Ix[3] + Ix[8] - Ix[6]) / 6
+                Y = (Iy[2] - Iy[0] + Iy[5] - Iy[3] + Iy[8] - Iy[6]) / 6
+                RX = (IRx[2] - IRx[0] + IRx[5] - IRx[3] + IRx[8] - IRx[6]) / 6
+                RY = (IRy[2] - IRy[0] + IRy[5] - IRy[3] + IRy[8] - IRy[6]) / 6
+                half_w = img_w / 2
+                half_h = img_h / 2
+                L_eye = (half_w + (center_left - Ix[5]) * half_w / X, half_h + (center_left - Iy[5]) * half_h / Y)
+                R_eye = (half_w + (center_left - IRx[5]) * half_w / RX, half_h + (center_left - IRy[5]) * half_h / RY)
+
+                p2 = ((L_eye[0]+R_eye[0]) / 2, (L_eye[1]+R_eye[1]) / 2)
+
+                cv.line(frame, p1, p2, (255, 255, 0), 3)
+
+
 
         # 이미지를 회전시켜서 img로 돌려받음
         img = Rotate(frame, 90)  # 뒷면90 or 180 or 앞면270
@@ -104,6 +178,43 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
         key = cv.waitKey(1)
         if key == ord('q'):
             break
+        elif key == ord('u'):
+            Ix[0] = center_left[0]
+            Iy[0] = center_left[1]
+            IRx[0], IRy[0] = center_right[0], center_right[1]
+        elif key == ord('i'):
+            Ix[1] = center_left[0]
+            Iy[1] = center_left[1]
+            IRx[1], IRy[1] = center_right[0], center_right[1]
+        elif key == ord('o'):
+            Ix[2] = center_left[0]
+            Iy[2] = center_left[1]
+            IRx[2], IRy[2] = center_right[0], center_right[1]
+        elif key == ord('j'):
+            Ix[3] = center_left[0]
+            Iy[3] = center_left[1]
+            IRx[3], IRy[3] = center_right[0], center_right[1]
+        elif key == ord('k'):
+            Ix[4] = center_left[0]
+            Iy[4] = center_left[1]
+            IRx[4], IRy[4] = center_right[0], center_right[1]
+        elif key == ord('l'):
+            Ix[5] = center_left[0]
+            Iy[5] = center_left[1]
+            IRx[5], IRy[5] = center_right[0], center_right[1]
+        elif key == ord('n'):
+            Ix[6] = center_left[0]
+            Iy[6] = center_left[1]
+            IRx[6], IRy[6] = center_right[0], center_right[1]
+        elif key == ord('m'):
+            Ix[7] = center_left[0]
+            Iy[7] = center_left[1]
+            IRx[7], IRy[7] = center_right[0], center_right[1]
+        elif key == ord(','):
+            Ix[8] = center_left[0]
+            Iy[8] = center_left[1]
+            IRx[8], IRy[8] = center_right[0], center_right[1]
+
 
 frame.release()
 #메인 윈도우 제거
