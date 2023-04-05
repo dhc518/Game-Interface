@@ -64,10 +64,10 @@ b = ( I7(y)-I1(y)+I8(y)-I2(y)+I9(y)-I3(y) ) / 6
 (Now_I(x) - I5) * A/a
 (Now_I(y) - I5) * B/b
 '''
-Ix = []
-Iy = []
-IRx = []
-IRy = []
+Ix = [''] * 9
+Iy = [''] * 9
+IRx = [''] * 9
+IRy = [''] * 9
 
 
 
@@ -91,7 +91,7 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
         if results.multi_face_landmarks:
             mesh_points = np.array([np.multiply([p.x, p.y], [img_w, img_h]).astype(int)
                                  for p in results.multi_face_landmarks[0].landmark])
-            print(mesh_points)
+            #print(mesh_points)
             cv.polylines(frame, [mesh_points[LEFT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
             cv.polylines(frame, [mesh_points[RIGHT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
             #cv.polylines(frame, [mesh_points[LEFT_IRIS]], True, (0, 0, 255), 2, cv.LINE_AA)
@@ -102,7 +102,7 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
             center_right = np.array([r_cx, r_cy], dtype=np.int32)
             cv.circle(frame, center_left, int(l_radius), (0, 0, 255), 2, cv.LINE_AA)
             cv.circle(frame, center_right, int(r_radius), (0, 0, 255), 2, cv.LINE_AA)
-
+            #print(center_left)
             # face_direction
             face_2d = []
             face_3d = []
@@ -137,19 +137,27 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
             z = angles[2] * 360
 
             # nose+3d_projection, jacobian = cv.projectionPoints(nose_3d, rot_vec, trans_vec, camera_mat, dist_mat)
-
+            #print(Ix, Iy)
             p1 = (int(nose_2d[0]), int(nose_2d[1]))
+            #print(p1)
             if Iy[8]:
                 X = (Ix[2] - Ix[0] + Ix[5] - Ix[3] + Ix[8] - Ix[6]) / 6
-                Y = (Iy[2] - Iy[0] + Iy[5] - Iy[3] + Iy[8] - Iy[6]) / 6
+                Y = (Iy[6] - Iy[0] + Iy[7] - Iy[1] + Iy[8] - Iy[2]) / 6
+                print(X, Y)
+
                 RX = (IRx[2] - IRx[0] + IRx[5] - IRx[3] + IRx[8] - IRx[6]) / 6
-                RY = (IRy[2] - IRy[0] + IRy[5] - IRy[3] + IRy[8] - IRy[6]) / 6
+                RY = (IRy[6] - IRy[0] + IRy[7] - IRy[1] + IRy[8] - IRy[2]) / 6
+
                 half_w = img_w / 2
                 half_h = img_h / 2
-                L_eye = (half_w + (center_left - Ix[5]) * half_w / X, half_h + (center_left - Iy[5]) * half_h / Y)
-                R_eye = (half_w + (center_left - IRx[5]) * half_w / RX, half_h + (center_left - IRy[5]) * half_h / RY)
+                L_eye = (half_w + (center_left[0] - Ix[5]) * half_w / X, half_h + (Iy[5] - center_left[1]) * half_h / Y)
 
-                p2 = ((L_eye[0]+R_eye[0]) / 2, (L_eye[1]+R_eye[1]) / 2)
+                R_eye = (half_w + (center_right[0] - IRx[5]) * half_w / RX, half_h + (center_left[0] - IRy[5]) * half_h / RY)
+
+                print(L_eye)
+
+                p2 = (int(L_eye[0]), int(L_eye[1]))
+                #p2 = ((L_eye[0]+R_eye[0]) / 2, (L_eye[1]+R_eye[1]) / 2)
 
                 cv.line(frame, p1, p2, (255, 255, 0), 3)
 
@@ -165,10 +173,10 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
         cv.imshow('Main', frame)
 
         # 회전된 이미지 표시
-        cv.imshow('CAM_RotateWindow', img)
+        #cv.imshow('CAM_RotateWindow', img)
 
         #반전된 이미지 표시
-        cv.imshow('CAM_FlipWindow', img2)
+        #cv.imshow('CAM_FlipWindow', img2)
 
         #윈도우 크기 늘리기
         resolutuon = 1080
@@ -182,38 +190,47 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
             Ix[0] = center_left[0]
             Iy[0] = center_left[1]
             IRx[0], IRy[0] = center_right[0], center_right[1]
+            print(Ix[0], Iy[0])
         elif key == ord('i'):
             Ix[1] = center_left[0]
             Iy[1] = center_left[1]
             IRx[1], IRy[1] = center_right[0], center_right[1]
+            print(Ix[1], Iy[1])
         elif key == ord('o'):
             Ix[2] = center_left[0]
             Iy[2] = center_left[1]
             IRx[2], IRy[2] = center_right[0], center_right[1]
+            print(Ix[2], Iy[2])
         elif key == ord('j'):
             Ix[3] = center_left[0]
             Iy[3] = center_left[1]
             IRx[3], IRy[3] = center_right[0], center_right[1]
+            print(Ix[3], Iy[3])
         elif key == ord('k'):
             Ix[4] = center_left[0]
             Iy[4] = center_left[1]
             IRx[4], IRy[4] = center_right[0], center_right[1]
+            print(Ix[4], Iy[4])
         elif key == ord('l'):
             Ix[5] = center_left[0]
             Iy[5] = center_left[1]
             IRx[5], IRy[5] = center_right[0], center_right[1]
+            print(Ix[5], Iy[5])
         elif key == ord('n'):
             Ix[6] = center_left[0]
             Iy[6] = center_left[1]
             IRx[6], IRy[6] = center_right[0], center_right[1]
+            print(Ix[6], Iy[6])
         elif key == ord('m'):
             Ix[7] = center_left[0]
             Iy[7] = center_left[1]
             IRx[7], IRy[7] = center_right[0], center_right[1]
+            print(Ix[7], Iy[7])
         elif key == ord(','):
             Ix[8] = center_left[0]
             Iy[8] = center_left[1]
             IRx[8], IRy[8] = center_right[0], center_right[1]
+            print(Ix[8], Iy[8])
 
 
 frame.release()
