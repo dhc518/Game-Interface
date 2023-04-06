@@ -91,6 +91,12 @@ with mp_face_mesh.FaceMesh(max_num_faces =1,
         if results.multi_face_landmarks:
             mesh_points = np.array([np.multiply([p.x, p.y], [img_w, img_h]).astype(int)
                                  for p in results.multi_face_landmarks[0].landmark])
+
+            #face_mesh 전부 표시하기 색(B,G,R)
+            for pt in mesh_points:
+                #cv.circle(img, center,radius,color,thicknex,lineType)
+                cv.circle(frame, pt, 1, (255,255,255), -1, cv.LINE_AA)
+
             #print(mesh_points)
             cv.polylines(frame, [mesh_points[LEFT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
             cv.polylines(frame, [mesh_points[RIGHT_EYE]], True, (0, 255, 0), 2, cv.LINE_AA)
