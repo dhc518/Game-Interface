@@ -72,7 +72,7 @@ def main(queue1, queue2):
 
             if keys[pygame.K_q]:
                 running = False
-                queue2.put('q')
+                queue1.put('q')
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if not game_started:

@@ -23,5 +23,5 @@ if __name__ == '__main__':
     p1.start()
     p2.start()
 
-    p1.join()
-    p2.join()
+    p1.join() #test 프로그램 종료 대기
+    p2.join() #mediapipe 프로그램 종료 대기

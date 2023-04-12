@@ -261,11 +261,12 @@ def check_face(queue1, queue2):
                         frame.release()
                         # 메인 윈도우 제거
                         cv.destroyAllWindows()
-                    setting = queue1.get()
-                    print(setting)
+                    else:
+                        setting = queue1.get()
+                        print(setting)
 
-                    Ix[setting], Iy[setting] = set_left_eye()
-                    IRx[setting], IRy[setting] = set_right_eye()
+                        Ix[setting], Iy[setting] = set_left_eye()
+                        IRx[setting], IRy[setting] = set_right_eye()
             # key = cv.waitKey(1)
             # if key == ord('q'):
             #     break
