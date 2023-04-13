@@ -1,7 +1,7 @@
 import pygame
 import random
 import math
-import multiprocessing
+from queue import Queue
 
 pygame.init()
 screen = pygame.display.set_mode((1920, 1080))
@@ -55,7 +55,7 @@ def draw_timer(time_elapsed):
     timer_text = font.render(f"{time_elapsed:.1f}s", True, (0, 0, 0))
     screen.blit(timer_text, (935, 400))
 
-def main():
+def main(q1, queue2):
     running = True
     game_started = False
     center_color, target_colors = create_points()
@@ -72,6 +72,7 @@ def main():
 
             if keys[pygame.K_q]:
                 running = False
+                q1.put('q')
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if not game_started:
@@ -94,4 +95,4 @@ def main():
 
     pygame.quit()
 
-main()
+

@@ -1,7 +1,7 @@
 import pygame
 import random
 import math
-import multiprocessing
+
 
 pygame.init()
 screen = pygame.display.set_mode((1920, 1080))
@@ -95,3 +95,5 @@ def main():
     pygame.quit()
 
 main()
+
+
