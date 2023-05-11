@@ -391,17 +391,18 @@ def main():
                         # L_eye = (half_w + (((left_center[0]-LL) / (LR-LL)) -Ix[4]) * half_w / X, half_h + (((left_center[1] - high_middle) / (low_middle - high_middle)) -Iy[4]) * half_h / Y)
                         # R_eye = (half_w + (((right_center[0]-RL) / (RR-RL)) -IRx[4]) * half_w / RX, half_h + (((right_center[1] - high_middle) / (low_middle - high_middle)) -IRy[4]) * half_h / RY)
 
-                        L_eye = (half_w + (((left_center[0] - LL) / (LR - LL)) - Ix[4]) * set_width / X, half_h + (
+                        L_eye = (middle[0] + (((left_center[0] - LL) / (LR - LL)) - Ix[4]) * set_width / X, half_h + (
                                     ((left_center[1] - high_middle) / (low_middle - high_middle)) - Iy[
                                 4]) * set_height / Y)
-                        R_eye = (half_w + (((right_center[0] - RL) / (RR - RL)) - IRx[4]) * set_width / RX, half_h + (
+                        R_eye = (middle[1] + (((right_center[0] - RL) / (RR - RL)) - IRx[4]) * set_width / RX, half_h + (
                                     ((right_center[1] - high_middle) / (low_middle - high_middle)) - IRy[
                                 4]) * set_height / RY)
 
                         # print(L_eye)
 
                         # p2 = (int(L_eye[0]), int(L_eye[1]))
-                        p2 = (int((L_eye[0] + R_eye[0]) / 2), int((L_eye[1] + R_eye[1]) / 2))
+                        p2 = (int((L_eye[0] + R_eye[0]) / 2), int((L_eye[1] + R_eye[1]) / 2))   #1920/1080 좌표
+                        adjust_p2 = ( p2[0] / 1920 * width, p2[1] / 1080 * height)
                         cv.line(frame, p1, p2, (255, 255, 0), 3)
                         #print(p2)
 
