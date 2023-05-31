@@ -31,6 +31,8 @@ pygame.display.set_caption("Pacman Game")
 clock = pygame.time.Clock()
 
 
+
+
 def draw():
     window.fill(WHITE)
 
