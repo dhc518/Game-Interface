@@ -6,9 +6,12 @@ import random
 import math
 import copy
 
+running = True
+calib_run = False
+game_run = False
 
-pygame.init()
-screen = pygame.display.set_mode((1920, 1080))
+# pygame.init()
+# screen = pygame.display.set_mode((1920, 1080))
 
 colors = [
     (255, 0, 0), (0, 255, 0), (0, 0, 255),
@@ -16,16 +19,25 @@ colors = [
     (128, 0, 128), (0, 128, 128)
 ]
 
-q = [0,1,2,3,4,5,6,7]
+q = [0, 1, 2, 3, 4, 5, 6, 7]
 random.shuffle(q)
 q.append(q[7])
 
 posNum = 0
 
+def test_init():
+    global q
+    global posNum
+
+    q = [0, 1, 2, 3, 4, 5, 6, 7]
+    random.shuffle(q)
+    q.append(q[7])
+
+    posNum = 0
+
+
 def create_points():
     global q
-
-
 
     center_color = random.choice(colors)
     other_colors = copy.deepcopy(colors)
@@ -195,7 +207,7 @@ def show_window(frame):
 
 
 def calibration_test():
-    global running
+    global calib_run
     global game_started
     global center_color, target_colors
     global clock
@@ -204,6 +216,7 @@ def calibration_test():
     global posNum
 
     click = False
+    if calib_run == False:return click
 
     if len(q) == 0:
         q = [0, 1, 2, 3, 4, 5, 6, 7]
@@ -218,8 +231,10 @@ def calibration_test():
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_q]:
-            running = False
+            #running = False
             pygame.quit()
+            calib_run = False
+            return click
 
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -250,11 +265,19 @@ def calibration_test():
     clock.tick(60)
     return click
 
+def pacman_init():
+    pass
+
+def pacman(p2):
+    pass
+
 def main():
     global q
     global posNum
     global running
-    running = True
+    global calib_run
+    global screen
+    global game_run
     global game_started
     game_started = False
     global center_color, target_colors
@@ -419,11 +442,24 @@ def main():
                 show_window(frame)
                 cv.imshow('Main', frame)
 
-                click = calibration_test()
+                click = calibration_test() #캘리브레이션
+
+                if game_run == True: pacman(p2)
+
                 #print(click)
                 key = cv.waitKey(1)
                 if key == ord('q'):
                     break
+                elif key == ord('!'):
+                    calib_run = True
+                    pygame.init()
+                    test_init()
+                    screen = pygame.display.set_mode((1920, 1080))
+                elif key == ord('`'):
+                    game_run = True
+                    pacman_init()
+                    pygame.init()
+                    screen = pygame.display.set_mode((1920, 1080))
                 elif click and results.multi_face_landmarks:
                     setting = posNum
                     print(setting)
@@ -440,8 +476,6 @@ def main():
         cv.destroyAllWindows()
         # 회전 원도우 제거
         # cv.destroyWindow('CAM_RotateWindow')
-
-    pygame.quit()
 
 
 main()
